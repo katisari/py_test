@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+        .header, .add_job{
+            display:inline-block;
+            padding: 20px;
+        }
+        .add_job{
+            margin-right:20px;
+            float:right;
+            font-size: 200%;
+        }
+        .postings, .my_job{
+            width:40%;
+            vertical-align:top;
+            display:inline-block;
+        }
+        .contain{
+            padding: 20px;
+        }
+    
+    </style>
+</head>
+<body>
+    <div class="header">
+        Welcome {{request.session.first_name}}! 
+        <a href="{% url 'logoff' %}">Logout</a>
+    </div>
+    <a href="{% url 'add_job' %}" class="add_job">Add a Job</a>
+    <div class="contain">
+        <table class="table postings ">
+            <thead>
+                <tr>
+                    <th>Job</th>
+                    <th>Location</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if all_jobs %}
+                    {% for job in all_jobs %}
+                    <tr>
+                        <td>{{job.title}}</td>
+                        <td>{{job.location}}</td>
+                        <td><a href="{% url 'view_job' id=job.id %}">View </a>
+                            <a href="{% url 'add_myjobs' id=job.id %}"> Add</a>
+                            {% if job.user_id == request.session.user_id %}
+                            <a href="{% url 'edit_job' id=job.id %}">edit </a>
+                            <a href="{% url 'cancel' id=job.id %}"> cancel </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+        <table class="table my_job">
+            <thead>
+                <tr>
+                    <th>My Jobs</th>
+                </tr>
+            </thead>
+            <tbody>
+                    {% if my_jobs %}
+                    {% for job in my_jobs %}
+                        <tr>
+                            
+                            <td>{{job.title}}</td>
+                            <td><a href="{% url 'view_job' id=job.id %}">View </a>
+                                <a href="{% url 'cancel' id=job.id %}">Done</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
